@@ -13,6 +13,8 @@ const createUser = (req, res) => {
     // res.json(req.body);
     const email = req.body.email;
     const password = req.body.password;
+    const dateOfBirth = Date.parse(req.body.dateOfBirth);
+    const contact = Number(req.body.contact);
 
     const newUser = new User({
         // userName: req.body.userName,
@@ -21,6 +23,10 @@ const createUser = (req, res) => {
         }, 
         email: email,
         password: password, 
+        dateOfBirth: dateOfBirth,
+        contact: contact,
+        gender: req.body.gender,
+        receiveOffer: req.body.receiveOffer,
     });
 
     newUser.save()
@@ -60,9 +66,13 @@ const updateUser = (req, res) => {
             firstName = req.body.firstName;
             middleName = req.body.middleName;
             lastName = req.body.lastName;
-            user.name = {firstName, middleName, lastName}
+            user.userName = {firstName, middleName, lastName}
             user.email = req.body.email;
             user.password = req.body.password;
+            user.dateOfBirth = req.body.dateOfBirth;
+            user.contact = req.body.contact;
+            user.gender = req.body.gender;
+            user.receiveOffer = req.body.receiveOffer;
 
             user.save()
                 .then(() => res.json(`User ${req.params.id} updated.`))

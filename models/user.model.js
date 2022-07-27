@@ -33,6 +33,7 @@ const UserSchema = new schema(
     receiveOffer: { type: Boolean },
     contact: { type: Number, required: true },
 
+    profilePic: { type: Buffer},
     // address: { type: mongoose.SchemaTypes.ObjectId },
     // payment: { type: mongoose.SchemaTypes.ObjectId },
     // taggedItems: { type: mongoose.SchemaTypes.ObjectId },

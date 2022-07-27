@@ -8,4 +8,8 @@ router.route('/email/:email').get(userController.findUserByEmail);
 router.route('/:id').delete(userController.deleteUser);
 router.route('/update/:id').put(userController.updateUser);
 
+router.route('/address/:userId').get(userController.findAddressByUserId);
+router.route('/address/add').post(userController.addAddress);
+router.route('/address/update/:userId').put(userController.updateAddress);
+
 module.exports = router;

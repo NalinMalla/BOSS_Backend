@@ -79,7 +79,7 @@ const updateUser = (req, res) => {
       user.contact = req.body.contact;
       user.gender = req.body.gender;
       user.receiveOffer = req.body.receiveOffer;
-      user._id = req.params.id;
+      user.profilePic = req.body.profilePic;
       user
         .save()
         .then(() => res.json(`User ${req.params.id} updated.`))
@@ -158,12 +158,12 @@ const addAddress = (req, res) => {
       contact: contact,
       userId: req.body.userId,
       addressDetail: req.body.addressDetail,
-      province: req.body.province,
+      province: Number(req.body.province),
       city: req.body.city,
-      zipCode: req.body.zipCode,
+      zipCode: Number(req.body.zipCode),
     });
   
-    newUser
+    newAddress
       .save()
       .then(() => res.json(`User ${firstName} Added.`))
       .catch((err) => res.status(400).json(`Error: ${err}`));
@@ -180,10 +180,9 @@ const addAddress = (req, res) => {
         address.contact = req.body.contact;
         address.userId= req.body.userId,
         address.addressDetail= req.body.addressDetail,
-        address.province= req.body.province,
+        address.province= Number(req.body.province),
         address.city= req.body.city,
-        address.zipCode= req.body.zipCode,
-        address._id = req.params.id;
+        address.zipCode= Number(req.body.zipCode),
         address
           .save()
           .then(() => res.json(`User Address ${req.params.id} updated.`))

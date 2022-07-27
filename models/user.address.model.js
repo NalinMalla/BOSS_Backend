@@ -33,15 +33,14 @@ const UsersAddressSchema = new schema(
 
     contact: { type: Number, required: [true, "Contact number is mandatory."] },
 
-    addressDetail: { type: String },
+    addressDetail: { type: String, required: [true, "Address Detail is mandatory."] },
 
-    province: { type: String, required: [true, "Select a province."] },
+    province: { type: Number, required: [true, "Select a province."] },
 
     city: { type: String, required: [true, "Select a city."] },
 
     zipCode: {
-      type: String,
-      minlength: [5, "Zip Code needs to be at least 5 character"],
+      type: Number
     },
   },
   {

@@ -17,6 +17,7 @@ var logNo = 0;
 
 app.use(cors()); //Cors middleware
 app.use(express.json()); //This allows us to parse json
+app.use('/uploads', express.static('uploads'));   //ignores /uploads in url
 
 //  Connect to MongoDB database.
 const URI = process.env.ATLAS_URI;

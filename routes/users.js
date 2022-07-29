@@ -1,15 +1,35 @@
 const router = require("express").Router();
-const userController = require('../controller/user.controllers');
+const userController = require("../controller/user.controllers");
+const multer = require("multer");
 
-router.route('/').get(userController.findAllUsers);
-router.route('/add').post(userController.createUser);
-router.route('/:id').get(userController.findUserById);
-router.route('/email/:email').get(userController.findUserByEmail);
-router.route('/:id').delete(userController.deleteUser);
-router.route('/update/:id').put(userController.updateUser);
+const Storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "uploads");
+  },
 
-router.route('/address/:userId').get(userController.findAddressByUserId);
-router.route('/address/add').post(userController.addAddress);
-router.route('/address/update/:userId').put(userController.updateAddress);
+  filename: (req, file, callback) => {
+    callback(
+      null,
+      new Date().toISOString().slice(0, 10) + "--" + file.originalname
+    );
+  },
+});
 
+const upload = multer({
+  storage: Storage,
+  // limits:{fileSize: 1024*1024*16}
+});
+
+router.route("/").get(userController.findAllUsers);
+router.route("/add").post(userController.createUser);
+router.route("/:id").get(userController.findUserById);
+router.route("/email/:email").get(userController.findUserByEmail);
+router.route("/:id").delete(userController.deleteUser);
+router
+  .route("/update/:id")
+  .put(upload.single("profilePic"), userController.updateUser);
+
+router.route("/address/:userId").get(userController.findAddressByUserId);
+router.route("/address/add").post(userController.addAddress);
+router.route("/address/update/:userId").put(userController.updateAddress);
 module.exports = router;

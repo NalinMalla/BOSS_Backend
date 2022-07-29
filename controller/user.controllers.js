@@ -79,7 +79,14 @@ const updateUser = (req, res) => {
       user.contact = req.body.contact;
       user.gender = req.body.gender;
       user.receiveOffer = req.body.receiveOffer;
-      user.profilePic = req.body.profilePic;
+      if(req.file!==undefined)
+      {
+        user.profilePic = req.file.path;
+      }
+      else
+      {
+        user.profilePic = user.profilePic;
+      }
       user
         .save()
         .then(() => res.json(`User ${req.params.id} updated.`))
@@ -87,45 +94,6 @@ const updateUser = (req, res) => {
     })
     .catch((err) => res.status(400).json(`Error: ${err}`));
 };
-
-// const updateUser = (req, res) => {
-//   User.updateOne(
-//     { _id: req.params.id },
-//     {
-//       $set: {
-//         userName: {
-//           firstName: req.body.firstName,
-//           middleName: req.body.middleName,
-//           lastName: req.body.lastName,
-//         },
-//         email: req.body.email,
-//         contact: Number(req.body.contact),
-//         dateOfBirth: Date.parse(req.body.dateOfBirth),
-//         gender: req.body.gender,
-//       },
-//     }
-//   );
-//   User.findById(req.params.id)
-//     .then(
-//       User.updateOne(
-//         { _id: req.params.id },
-//         {
-//           $set: {
-//             userName: {
-//               firstName: req.body.firstName,
-//               middleName: req.body.middleName,
-//               lastName: req.body.lastName,
-//             },
-//             email: req.body.email,
-//             contact: Number(req.body.contact),
-//             dateOfBirth: Date.parse(req.body.dateOfBirth),
-//             gender: req.body.gender,
-//           },
-//         }
-//       )
-//     )
-//     .catch((err) => res.status(400).json(`Error: ${err}`));
-// };
 
 const findAddressByUserId = (req, res) => {
   Address.findOne({ userId: req.params.userId })

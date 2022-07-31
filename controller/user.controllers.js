@@ -12,7 +12,6 @@ const createUser = (req, res) => {
   const firstName = req.body.firstName;
   const middleName = req.body.middleName;
   const lastName = req.body.lastName;
-  // res.json(req.body);
   const email = req.body.email;
   const password = req.body.password;
   const dateOfBirth = Date.parse(req.body.dateOfBirth);
@@ -76,7 +75,7 @@ const updateUser = (req, res) => {
       user.email = req.body.email;
       user.password = req.body.password;
       user.dateOfBirth = req.body.dateOfBirth;
-      user.contact = req.body.contact;
+      user.contact = Number(req.body.contact);
       user.gender = req.body.gender;
       user.receiveOffer = req.body.receiveOffer;
       if(req.file!==undefined)

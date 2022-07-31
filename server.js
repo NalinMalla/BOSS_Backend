@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const usersRouter = require('./routes/users');
+const productsRouter = require('./routes/products');
 
 require("dotenv").config(); //The dotenv file has our environmental variables
 
@@ -63,6 +64,7 @@ app.use(cors());
 app.use(express.json()); //  Originally >app.use(bodyParser.json());< but now is included in express.
 
 app.use('/users', usersRouter);
+app.use('/products', productsRouter);
 
 //  Function to start Server and listen to port no PORT.
 app.listen(PORT, () => {

@@ -94,10 +94,6 @@ const updateProduct = (req, res) => {
           product.image.push(val[0].path);
         });
       }
-      // else
-      // {
-      //   product.image = product.image;
-      // }
 
       product
         .save()
@@ -107,20 +103,51 @@ const updateProduct = (req, res) => {
     .catch((err) => res.status(400).json(`Error: ${err}`));
 };
 
-const productQuestion = (req, res) => {
+const createProductQuestionAnswer = (req, res) => {
+  const questionAnswer = new QuestionAnswer();
+  questionAnswer.product = req.params.productId;
+  questionAnswer.questionAnswerData.push({
+    questionerId: req.body.userId,
+    questioner: req.body.userName,
+    question: req.body.question,
+    date: Date.now(),
+  });
+
+  questionAnswer
+    .save()
+    .then(() => res.json(`QuestionAnswer ${req.params.productId} created.`))
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const addProductQuestion = (req, res) => {
   QuestionAnswer.findOne({ product: req.params.productId })
     .then((questionAnswer) => {
       questionAnswer.product = req.params.productId;
-      let question = {
-        questioner: req.body.userId,
+      questionAnswer.questionAnswerData.push({
+        questionerId: req.body.userId,
+        questioner: req.body.userName,
         question: req.body.question,
-      };
-      questionAnswer.questionAnswerData.push(question);
+        date: Date.now(),
+      });
       questionAnswer
         .save()
-        .then(() => res.json(`questionAnswer ${req.params.id} updated.`))
+        .then(() => res.json(`Question ${req.params.productId} add.`))
         .catch((err) => res.status(400).json(`Error: ${err}`));
     })
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const findQuestionAnswerByProductId = (req, res) => {
+  QuestionAnswer.findOne({ product: req.params.productId })
+    .then((QuestionAnswer) =>
+      QuestionAnswer === null
+        ? res
+            .status(404)
+            .json(
+              `QuestionAnswer with productId ${req.params.productId} does not exists.`
+            )
+        : res.json(QuestionAnswer)
+    )
     .catch((err) => res.status(400).json(`Error: ${err}`));
 };
 
@@ -129,4 +156,6 @@ exports.createProduct = createProduct;
 exports.findProductById = findProductById;
 exports.deleteProduct = deleteProduct;
 exports.updateProduct = updateProduct;
-exports.productQuestion = productQuestion;
+exports.createProductQuestionAnswer = createProductQuestionAnswer;
+exports.addProductQuestion = addProductQuestion;
+exports.findQuestionAnswerByProductId = findQuestionAnswerByProductId;

@@ -26,8 +26,6 @@ const ProductSchema = new schema(
     image: [{ type: String }],
     description: { type: String },
     specification: { type: String },
-    review: [{ type: schema.Types.ObjectId }],
-    questionAnswer: { type: schema.Types.ObjectId },
   },
   {
     timestamps: true,

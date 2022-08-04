@@ -37,5 +37,8 @@ router
 router.route("/:id").get(productController.findProductById);
 router.route("/:id").delete(productController.deleteProduct);
 router.route("/update/:id").put(upload.any(), productController.updateProduct);
+router.route("/createQuestionAnswer/:productId").post(productController.createProductQuestionAnswer);
+router.route("/addQuestion/:productId").put(productController.addProductQuestion);
+router.route("/questionAnswer/:productId").get(productController.findQuestionAnswerByProductId)
 
 module.exports = router;

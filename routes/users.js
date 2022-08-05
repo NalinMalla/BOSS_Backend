@@ -32,4 +32,7 @@ router
 router.route("/address/:userId").get(userController.findAddressByUserId);
 router.route("/address/add").post(userController.addAddress);
 router.route("/address/update/:userId").put(userController.updateAddress);
+router.route("/taggedItem/:userId").get(userController.findTaggedItemByUserId);
+router.route("/taggedItem/create/:userId").post(userController.createTaggedItem);
+router.route("/taggedItem/add/:userId").put(userController.addTaggedItem);
 module.exports = router;

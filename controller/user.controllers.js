@@ -1,6 +1,7 @@
 let User = require("../models/user.model");
 let Address = require("../models/user.address.model");
 let Payment = require("../models/user.payment.model");
+let TaggedItem = require("../models/taggedItem.model");
 
 const findAllUsers = (req, res) => {
   User.find()
@@ -78,12 +79,9 @@ const updateUser = (req, res) => {
       user.contact = Number(req.body.contact);
       user.gender = req.body.gender;
       user.receiveOffer = req.body.receiveOffer;
-      if(req.file!==undefined)
-      {
+      if (req.file !== undefined) {
         user.profilePic = req.file.path;
-      }
-      else
-      {
+      } else {
         user.profilePic = user.profilePic;
       }
       user
@@ -109,68 +107,106 @@ const findAddressByUserId = (req, res) => {
 };
 
 const addAddress = (req, res) => {
-    const firstName = req.body.firstName;
-    const middleName = req.body.middleName;
-    const lastName = req.body.lastName;
-    const email = req.body.email;
-    const contact = Number(req.body.contact);
-  
-    const newAddress = new Address({
-      receiversName: {
-        firstName,
-        middleName,
-        lastName,
-      },
-      email: email,
-      contact: contact,
-      userId: req.body.userId,
-      addressDetail: req.body.addressDetail,
-      province: Number(req.body.province),
-      city: req.body.city,
-      zipCode: Number(req.body.zipCode),
-    });
-  
-    newAddress
-      .save()
-      .then(() => res.json(`User ${firstName} Added.`))
-      .catch((err) => res.status(400).json(`Error: ${err}`));
-  };
+  const firstName = req.body.firstName;
+  const middleName = req.body.middleName;
+  const lastName = req.body.lastName;
+  const email = req.body.email;
+  const contact = Number(req.body.contact);
 
-  const updateAddress = (req, res) => {
-    Address.findOne({ userId: req.params.userId })
-    .then((address) =>{
-        firstName = req.body.firstName;
-        middleName = req.body.middleName;
-        lastName = req.body.lastName;
-        address.receiversName = { firstName, middleName, lastName };
-        address.email = req.body.email;
-        address.contact = req.body.contact;
-        address.userId= req.body.userId,
-        address.addressDetail= req.body.addressDetail,
-        address.province= Number(req.body.province),
-        address.city= req.body.city,
-        address.zipCode= Number(req.body.zipCode),
+  const newAddress = new Address({
+    receiversName: {
+      firstName,
+      middleName,
+      lastName,
+    },
+    email: email,
+    contact: contact,
+    userId: req.body.userId,
+    addressDetail: req.body.addressDetail,
+    province: Number(req.body.province),
+    city: req.body.city,
+    zipCode: Number(req.body.zipCode),
+  });
+
+  newAddress
+    .save()
+    .then(() => res.json(`User ${firstName} Added.`))
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const updateAddress = (req, res) => {
+  Address.findOne({ userId: req.params.userId })
+    .then((address) => {
+      firstName = req.body.firstName;
+      middleName = req.body.middleName;
+      lastName = req.body.lastName;
+      address.receiversName = { firstName, middleName, lastName };
+      address.email = req.body.email;
+      address.contact = req.body.contact;
+      (address.userId = req.body.userId),
+        (address.addressDetail = req.body.addressDetail),
+        (address.province = Number(req.body.province)),
+        (address.city = req.body.city),
+        (address.zipCode = Number(req.body.zipCode)),
         address
           .save()
           .then(() => res.json(`User Address ${req.params.id} updated.`))
           .catch((err) => res.status(400).json(`Error: ${err}`));
-      })
-      .catch((err) => res.status(400).json(`Error: ${err}`));
-  };
+    })
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
 
 const findPaymentByUserId = (req, res) => {
-    Payment.findOne({ userId: req.params.userId })
-      .then((payment) =>
-        payment === null
-          ? res
-              .status(404)
-              .json(
-                `The payment related data of user ${req.params.userId} doesn't exist.`
-              )
-          : res.json(payment)
-      )
-      .catch((err) => res.status(400).json(`Error: ${err}`));
-  };
+  Payment.findOne({ userId: req.params.userId })
+    .then((payment) =>
+      payment === null
+        ? res
+            .status(404)
+            .json(
+              `The payment related data of user ${req.params.userId} doesn't exist.`
+            )
+        : res.json(payment)
+    )
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const createTaggedItem = (req, res) => {
+  const taggedItem = new TaggedItem();
+  taggedItem.user = req.params.userId;
+  taggedItem.products.push(req.body.productId);
+  taggedItem
+    .save()
+    .then(() => res.json(`TaggedItem for User ${req.params.userId} created.`))
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const addTaggedItem = (req, res) => {
+  TaggedItem.findOne({ user: req.params.userId })
+    .then((taggedItem) => {
+      taggedItem.user = req.params.userId;
+      taggedItem.products.push(req.body.productId);
+      taggedItem
+        .save()
+        .then(() => res.json(`Question ${req.params.userId} add.`))
+        .catch((err) => res.status(400).json(`Error: ${err}`));
+    })
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const findTaggedItemByUserId = (req, res) => {
+  TaggedItem
+    .findOne({ user: req.params.userId })
+    .then((taggedItem) =>
+      taggedItem === null
+        ? res
+            .status(404)
+            .json(
+              `taggedItem with userId ${req.params.userId} does not exists.`
+            )
+        : res.json(taggedItem)
+    )
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
 
 exports.findAllUsers = findAllUsers;
 exports.createUser = createUser;
@@ -181,3 +217,6 @@ exports.updateUser = updateUser;
 exports.findAddressByUserId = findAddressByUserId;
 exports.addAddress = addAddress;
 exports.updateAddress = updateAddress;
+exports.createTaggedItem = createTaggedItem;
+exports.addTaggedItem = addTaggedItem;
+exports.findTaggedItemByUserId = findTaggedItemByUserId;

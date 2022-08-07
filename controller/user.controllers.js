@@ -173,7 +173,6 @@ const findPaymentByUserId = (req, res) => {
 const createTaggedItem = (req, res) => {
   const taggedItem = new TaggedItem();
   taggedItem.user = req.params.userId;
-  taggedItem.products.push(req.body.productId);
   taggedItem
     .save()
     .then(() => res.json(`TaggedItem for User ${req.params.userId} created.`))

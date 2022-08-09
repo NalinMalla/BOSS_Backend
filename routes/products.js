@@ -30,7 +30,7 @@ const uploadName = [
   { name: "productPic6", maxCount: 1 },
 ];
 
-router.route("/").get(productController.findAllProduct);
+router.route("/all").get(productController.findAllProduct);
 router
   .route("/add")
   .post(upload.fields(uploadName), productController.createProduct);

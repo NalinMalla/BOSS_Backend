@@ -193,8 +193,7 @@ const addTaggedItem = (req, res) => {
 };
 
 const findTaggedItemByUserId = (req, res) => {
-  TaggedItem
-    .findOne({ user: req.params.userId })
+  TaggedItem.findOne({ user: req.params.userId })
     .then((taggedItem) =>
       taggedItem === null
         ? res
@@ -203,6 +202,19 @@ const findTaggedItemByUserId = (req, res) => {
               `taggedItem with userId ${req.params.userId} does not exists.`
             )
         : res.json(taggedItem)
+    )
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const deleteTaggedItem = (req, res) => {
+  TaggedItem.updateOne(
+    { _id: req.params.taggedItemId },
+    { $pull: { products: req.body.productId } }
+  )
+    .then(() =>
+      res.json(
+        `Product ${req.body.productId} deleted from Tagged Items of ${req.params.taggedItemId}.`
+      )
     )
     .catch((err) => res.status(400).json(`Error: ${err}`));
 };
@@ -219,3 +231,4 @@ exports.updateAddress = updateAddress;
 exports.createTaggedItem = createTaggedItem;
 exports.addTaggedItem = addTaggedItem;
 exports.findTaggedItemByUserId = findTaggedItemByUserId;
+exports.deleteTaggedItem = deleteTaggedItem;

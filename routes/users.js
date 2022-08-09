@@ -35,4 +35,6 @@ router.route("/address/update/:userId").put(userController.updateAddress);
 router.route("/taggedItem/:userId").get(userController.findTaggedItemByUserId);
 router.route("/taggedItem/create/:userId").post(userController.createTaggedItem);
 router.route("/taggedItem/add/:userId").put(userController.addTaggedItem);
+router.route("/taggedItem/delete/:taggedItemId").put(userController.deleteTaggedItem);
+
 module.exports = router;

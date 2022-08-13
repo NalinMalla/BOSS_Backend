@@ -36,5 +36,10 @@ router.route("/taggedItem/:userId").get(userController.findTaggedItemByUserId);
 router.route("/taggedItem/create/:userId").post(userController.createTaggedItem);
 router.route("/taggedItem/add/:userId").put(userController.addTaggedItem);
 router.route("/taggedItem/delete/:taggedItemId").put(userController.deleteTaggedItem);
+router.route("/cart/:userId").get(userController.findCartByUserId);
+router.route("/cart/create/:userId").post(userController.createCart);
+router.route("/cart/add/:userId").put(userController.addCart);
+router.route("/cart/updateCount/:cartId").put(userController.updateCartCount);
+router.route("/cart/delete/:cartId").put(userController.deleteCart);
 
 module.exports = router;

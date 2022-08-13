@@ -2,6 +2,8 @@ let User = require("../models/user.model");
 let Address = require("../models/user.address.model");
 let Payment = require("../models/user.payment.model");
 let TaggedItem = require("../models/taggedItem.model");
+let Cart = require("../models/cart.model");
+const { default: mongoose } = require("mongoose");
 
 const findAllUsers = (req, res) => {
   User.find()
@@ -186,7 +188,11 @@ const addTaggedItem = (req, res) => {
       taggedItem.products.push(req.body.productId);
       taggedItem
         .save()
-        .then(() => res.json(`Question ${req.params.userId} add.`))
+        .then(() =>
+          res.json(
+            `Product added to user ${req.params.userId}'s taggedItem list.`
+          )
+        )
         .catch((err) => res.status(400).json(`Error: ${err}`));
     })
     .catch((err) => res.status(400).json(`Error: ${err}`));
@@ -213,7 +219,79 @@ const deleteTaggedItem = (req, res) => {
   )
     .then(() =>
       res.json(
-        `Product ${req.body.productId} deleted from Tagged Items of ${req.params.taggedItemId}.`
+        `Product ${req.body.productId} deleted from Tagged Items ${req.params.taggedItemId}.`
+      )
+    )
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const createCart = (req, res) => {
+  const cart = new Cart();
+  cart.user = req.params.userId;
+  cart
+    .save()
+    .then(() => res.json(`Cart for User ${req.params.userId} created.`))
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const addCart = (req, res) => {
+  Cart.findOne({ user: req.params.userId })
+    .then((cart) => {
+      cart.user = req.params.userId;
+      cart.products.push(req.body.product);
+      cart
+        .save()
+        .then(() =>
+          res.json(`Product added to user ${req.params.userId}'s cart.`)
+        )
+        .catch((err) => res.status(400).json(`Error: ${err}`));
+    })
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const updateCartCount = (req, res) => {
+  Cart.updateOne(
+    { _id: req.params.cartId },
+    { $pull: { products: { productId: req.body.product.productId } } }
+  )
+    .then(() => {
+      Cart.findOne({ _id: req.params.cartId })
+        .then((cart) => {
+          cart.products.push(req.body.product);
+          cart
+            .save()
+            .then(() =>
+              res.json(
+                `Product's count ${req.body.product.count} to cart ${req.params.cartId}`
+              )
+            )
+            .catch((err) => res.status(400).json(`Error: ${err}`));
+        })
+        .catch((err) => res.status(400).json(`Error: ${err}`));
+    })
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const findCartByUserId = (req, res) => {
+  Cart.findOne({ user: req.params.userId })
+    .then((cart) =>
+      cart === null
+        ? res
+            .status(404)
+            .json(`Cart with userId ${req.params.userId} does not exists.`)
+        : res.json(cart)
+    )
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const deleteCart = (req, res) => {
+  Cart.updateOne(
+    { _id: req.params.cartId },
+    { $pull: { products: { productId: req.body.productId } } }
+  )
+    .then(() =>
+      res.json(
+        `Product ${req.body.productId} deleted from Cart ${req.params.cartId}.`
       )
     )
     .catch((err) => res.status(400).json(`Error: ${err}`));
@@ -232,3 +310,8 @@ exports.createTaggedItem = createTaggedItem;
 exports.addTaggedItem = addTaggedItem;
 exports.findTaggedItemByUserId = findTaggedItemByUserId;
 exports.deleteTaggedItem = deleteTaggedItem;
+exports.createCart = createCart;
+exports.addCart = addCart;
+exports.updateCartCount = updateCartCount;
+exports.findCartByUserId = findCartByUserId;
+exports.deleteCart = deleteCart;

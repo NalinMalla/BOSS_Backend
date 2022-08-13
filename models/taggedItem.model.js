@@ -5,8 +5,8 @@ const TaggedItemSchema = new schema(
   {
     user: {
       type: schema.Types.ObjectId,
-      required: [true, "Product Id is not set."],
-      unique: [true, "Product already has a Question & Answer file."],
+      required: [true, "User is not set."],
+      unique: [true, "User already has a taggedItem record."],
     },
     products: [{ type: schema.Types.ObjectId}],
   },

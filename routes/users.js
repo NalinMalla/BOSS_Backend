@@ -41,5 +41,7 @@ router.route("/cart/create/:userId").post(userController.createCart);
 router.route("/cart/add/:userId").put(userController.addCart);
 router.route("/cart/updateCount/:cartId").put(userController.updateCartCount);
 router.route("/cart/delete/:cartId").put(userController.deleteCart);
+router.route("/order/create").post(userController.createOrder);
+router.route("/order/:userId").get(userController.findOrderByUserId);
 
 module.exports = router;

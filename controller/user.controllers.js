@@ -3,7 +3,7 @@ let Address = require("../models/user.address.model");
 let Payment = require("../models/user.payment.model");
 let TaggedItem = require("../models/taggedItem.model");
 let Cart = require("../models/cart.model");
-const { default: mongoose } = require("mongoose");
+let Order = require("../models/user.order.model");
 
 const findAllUsers = (req, res) => {
   User.find()
@@ -297,6 +297,51 @@ const deleteCart = (req, res) => {
     .catch((err) => res.status(400).json(`Error: ${err}`));
 };
 
+const createOrder = (req, res) => {
+  const order = new Order();
+  console.log(req.body.payment);
+  order.user = req.body.userId;
+  order.products = req.body.products;
+  order.address = req.body.address;
+  order.payment.method = req.body.payment;
+
+  order.address = {
+    receiversName: {
+      firstName: req.body.address.firstName,
+      middleName: req.body.address.middleName,
+      lastName: req.body.address.lastName,
+    },
+    email: req.body.address.email,
+    contact: Number(req.body.address.contact),
+    userId: req.body.address.userId,
+    addressDetail: req.body.address.addressDetail,
+    province: Number(req.body.address.province),
+    city: req.body.address.city,
+    zipCode: req.body.address.zipCode,
+  };
+
+  order.save(function (err, result) {
+    if (err) {
+      response = { error: true, message: err };
+    } else {
+      response = { error: false, message: result._id };
+    }
+    res.json(response);
+  });
+};
+
+const findOrderByUserId = (req, res) => {
+  Order.find({ user: req.params.userId })
+    .then((order) =>
+      order === null
+        ? res
+            .status(404)
+            .json(`Order of userId ${req.params.userId} does not exists.`)
+        : res.json(order)
+    )
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
 exports.findAllUsers = findAllUsers;
 exports.createUser = createUser;
 exports.findUserById = findUserById;
@@ -315,3 +360,5 @@ exports.addCart = addCart;
 exports.updateCartCount = updateCartCount;
 exports.findCartByUserId = findCartByUserId;
 exports.deleteCart = deleteCart;
+exports.createOrder = createOrder;
+exports.findOrderByUserId = findOrderByUserId;

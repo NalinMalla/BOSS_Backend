@@ -34,6 +34,7 @@ router.route("/all").get(productController.findAllProduct);
 router
   .route("/add")
   .post(upload.fields(uploadName), productController.createProduct);
+router.route("/categories/:category").get(productController.findProductByCategory);
 router.route("/:id").get(productController.findProductById);
 router.route("/:id").delete(productController.deleteProduct);
 router.route("/update/:id").put(upload.any(), productController.updateProduct);

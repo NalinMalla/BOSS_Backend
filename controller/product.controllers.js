@@ -58,6 +58,20 @@ const findProductById = (req, res) => {
     .catch((err) => res.status(400).json(`Error: ${err}`));
 };
 
+const findProductByCategory = (req, res) => {
+  Product.find({ category: req.params.category })
+    .then((Product) =>
+      Product === null
+        ? res
+            .status(404)
+            .json(
+              `Products with category ${req.params.category} were not found.`
+            )
+        : res.json(Product)
+    )
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
 const deleteProduct = (req, res) => {
   Product.findByIdAndDelete(req.params.id)
     .then(() => res.json(`Product ${req.params.id} deleted.`))
@@ -159,3 +173,4 @@ exports.updateProduct = updateProduct;
 exports.createProductQuestionAnswer = createProductQuestionAnswer;
 exports.addProductQuestion = addProductQuestion;
 exports.findQuestionAnswerByProductId = findQuestionAnswerByProductId;
+exports.findProductByCategory = findProductByCategory;

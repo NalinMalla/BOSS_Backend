@@ -304,6 +304,9 @@ const createOrder = (req, res) => {
   order.products = req.body.products;
   order.address = req.body.address;
   order.payment.method = req.body.payment;
+  order.grossTotalPrice = req.body.grossTotalPrice;
+  order.netTotalPrice = req.body.netTotalPrice;
+  order.shippingFee = req.body.shippingFee;
 
   order.address = {
     receiversName: {

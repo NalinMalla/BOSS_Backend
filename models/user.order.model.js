@@ -50,6 +50,21 @@ const UserOrderSchema = new schema(
     payment: {
       method: {type: String, required: [true, "Select a payment method."]}
     },
+
+    grossTotalPrice: {
+      type: Number,
+      required: [true, "Gross Total Price is not set."]
+    },
+
+    netTotalPrice: {
+      type: Number,
+      required: [true, "Net Total Price is not set."]
+    },
+    
+    shippingFee: {
+      type: Number,
+      required: [true, "Shipping Fee is not set."]
+    },
   },
   {
     timestamps: true,

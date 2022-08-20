@@ -23,7 +23,13 @@ const ProductSchema = new schema(
       default: 0,
     },
 
+    sales:{
+      type: Number,
+      default: 0
+    },
+    
     image: [{ type: String }],
+    tags: { type: String },
     description: { type: String },
     specification: { type: String },
   },

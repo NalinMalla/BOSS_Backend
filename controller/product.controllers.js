@@ -2,9 +2,15 @@ let Product = require("../models/product.model");
 let QuestionAnswer = require("../models/questionAnswer.model");
 
 const findAllProduct = (req, res) => {
-  Product.find()
-    .then((product) => res.json(product))
-    .catch((err) => res.status(400).json(`Error: ${err}`));
+  if (req.params.searchType === "hotDeals") {
+    Product.find().sort({discountRate: -1})
+      .then((product) => res.json(product))
+      .catch((err) => res.status(400).json(`Error: ${err}`));
+  } else {
+    Product.find()
+      .then((product) => res.json(product))
+      .catch((err) => res.status(400).json(`Error: ${err}`));
+  }
 };
 
 const createProduct = (req, res) => {
@@ -35,6 +41,8 @@ const createProduct = (req, res) => {
   if (req.body.specification !== "") {
     product.specification = req.body.specification;
   }
+
+  product.tags = req.body.tags;
 
   Object.values(req.files).forEach((val) => {
     product.image.push(val[0].path);
@@ -67,6 +75,18 @@ const findProductByCategory = (req, res) => {
             .json(
               `Products with category ${req.params.category} were not found.`
             )
+        : res.json(Product)
+    )
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const findProductByTitle = (req, res) => {
+  Product.find({ title: req.params.title })
+    .then((Product) =>
+      Product === null
+        ? res
+            .status(404)
+            .json(`Products with title ${req.params.title} were not found.`)
         : res.json(Product)
     )
     .catch((err) => res.status(400).json(`Error: ${err}`));
@@ -174,3 +194,4 @@ exports.createProductQuestionAnswer = createProductQuestionAnswer;
 exports.addProductQuestion = addProductQuestion;
 exports.findQuestionAnswerByProductId = findQuestionAnswerByProductId;
 exports.findProductByCategory = findProductByCategory;
+exports.findProductByTitle = findProductByTitle;

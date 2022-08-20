@@ -33,7 +33,7 @@ const UserSchema = new schema(
     receiveOffer: { type: Boolean },
     contact: { type: Number, required: true },
     profilePic: { type:String },
-
+    role: {type: String}
   },
   {
     timestamps: true,

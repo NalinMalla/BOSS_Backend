@@ -20,6 +20,7 @@ const createUser = (req, res) => {
   const dateOfBirth = Date.parse(req.body.dateOfBirth);
   const contact = Number(req.body.contact);
 
+
   const newUser = new User({
     userName: {
       firstName,
@@ -33,6 +34,11 @@ const createUser = (req, res) => {
     gender: req.body.gender,
     receiveOffer: req.body.receiveOffer,
   });
+
+  if(req.body.role === "hakulakhe")
+  {
+    newUser.role = req.body.role;
+  }
 
   newUser
     .save()

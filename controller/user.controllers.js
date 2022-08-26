@@ -313,6 +313,7 @@ const createOrder = (req, res) => {
   order.grossTotalPrice = req.body.grossTotalPrice;
   order.netTotalPrice = req.body.netTotalPrice;
   order.shippingFee = req.body.shippingFee;
+  order.status= "Pending";
 
   order.address = {
     receiversName: {
@@ -351,6 +352,42 @@ const findOrderByUserId = (req, res) => {
     .catch((err) => res.status(400).json(`Error: ${err}`));
 };
 
+const findOrderById = (req, res) => {
+  Order.findById(req.params.orderId)
+    .then((order) =>
+      order === null
+        ? res
+            .status(404)
+            .json(`Order of userId ${req.params.userId} does not exists.`)
+        : res.json(order)
+    )
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const findOrderByStatus = (req, res) => {
+  Order.find({ status: req.params.status })
+    .then((order) =>
+      order === null
+        ? res
+            .status(404)
+            .json(`There is no orders of ${req.params.status}.`)
+        : res.json(order)
+    )
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const updateOrderById = (req, res) => {
+  Order.findById(req.params.orderId)
+    .then((order) => {
+        order.status= req.body.status;
+      order
+        .save()
+        .then(() => res.json(`Order ${req.params.orderId} updated.`))
+        .catch((err) => res.status(400).json(`Error: ${err}`));
+    })
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
 exports.findAllUsers = findAllUsers;
 exports.createUser = createUser;
 exports.findUserById = findUserById;
@@ -371,3 +408,6 @@ exports.findCartByUserId = findCartByUserId;
 exports.deleteCart = deleteCart;
 exports.createOrder = createOrder;
 exports.findOrderByUserId = findOrderByUserId;
+exports.findOrderByStatus = findOrderByStatus;
+exports.findOrderById = findOrderById;
+exports.updateOrderById = updateOrderById;

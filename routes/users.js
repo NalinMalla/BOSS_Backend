@@ -42,6 +42,9 @@ router.route("/cart/add/:userId").put(userController.addCart);
 router.route("/cart/updateCount/:cartId").put(userController.updateCartCount);
 router.route("/cart/delete/:cartId").put(userController.deleteCart);
 router.route("/order/create").post(userController.createOrder);
-router.route("/order/:userId").get(userController.findOrderByUserId);
+router.route("/userOrder/:userId").get(userController.findOrderByUserId);
+router.route("/orders/:status").get(userController.findOrderByStatus);
+router.route("/order/:orderId").get(userController.findOrderById);
+router.route("/updateOrder/:orderId").put(userController.updateOrderById);
 
 module.exports = router;

@@ -65,6 +65,8 @@ const UserOrderSchema = new schema(
       type: Number,
       required: [true, "Shipping Fee is not set."]
     },
+
+    status: {type:String}
   },
   {
     timestamps: true,

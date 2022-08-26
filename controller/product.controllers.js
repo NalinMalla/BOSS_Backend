@@ -1,9 +1,11 @@
 let Product = require("../models/product.model");
 let QuestionAnswer = require("../models/questionAnswer.model");
+let Review = require("../models/review.model");
 
 const findAllProduct = (req, res) => {
   if (req.params.searchType === "hotDeals") {
-    Product.find().sort({discountRate: -1})
+    Product.find()
+      .sort({ discountRate: -1 })
       .then((product) => res.json(product))
       .catch((err) => res.status(400).json(`Error: ${err}`));
   } else {
@@ -48,10 +50,14 @@ const createProduct = (req, res) => {
     product.image.push(val[0].path);
   });
 
-  product
-    .save()
-    .then(() => res.json(`Product ${product.title} Added.`))
-    .catch((err) => res.status(400).json(`Error: ${err}`));
+  product.save(function (err, result) {
+    if (err) {
+      response = { error: true, message: err };
+    } else {
+      response = { error: false, message: result._id };
+    }
+    res.json(response);
+  });
 };
 
 const findProductById = (req, res) => {
@@ -185,6 +191,99 @@ const findQuestionAnswerByProductId = (req, res) => {
     .catch((err) => res.status(400).json(`Error: ${err}`));
 };
 
+const createProductReview = (req, res) => {
+  const review = new Review();
+  review.product = req.params.productId;
+  review
+    .save()
+    .then(() => res.json(`Review ${req.params.productId} added.`))
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const addValidReviewer = (req, res) => {
+  Review.findOne({ product: req.params.productId })
+    .then((review) => {
+      review.validReviewers.push(req.body.userId);
+
+      review
+        .save()
+        .then(() =>
+          res.json(`Valid Reviewer for Product ${req.params.productId} added.`)
+        )
+        .catch((err) => res.status(400).json(`Error: ${err}`));
+    })
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const addReview = (req, res) => {
+  Review.findOne({ product: req.params.productId })
+    .then((review) => {
+      review.reviewData.push({
+        reviewerId: req.body.userId,
+        reviewerName: req.body.userName,
+        reviewText: req.body.review,
+        rating: req.body.rating,
+      });
+      console.log(typeof req.body.rating);
+
+      if (req.body.rating == 5) {
+        review.reviewsRating5 = review.reviewsRating5 + 1;
+        console.log("rating 5 add");
+      }
+
+      if (req.body.rating == 4) {
+        review.reviewsRating4 += 1;
+        console.log("rating 4 add");
+      }
+
+      if (req.body.rating == 3) {
+        review.reviewsRating3 += 1;
+        console.log("rating 3 add");
+      }
+
+      if (req.body.rating == 2) {
+        review.reviewsRating2 += 1;
+        console.log("rating 2 add");
+      }
+
+      if (req.body.rating == 1) {
+        review.reviewsRating1 += 1;
+        console.log("rating 1 add");
+      }
+
+      review.rating =
+        ((review.reviewsRating5 * 5 +
+          review.reviewsRating4 * 4 +
+          review.reviewsRating3 * 3 +
+          review.reviewsRating2 * 2 +
+          review.reviewsRating1 * 1) /
+          (review.reviewData.length * 5)) *
+        5;
+
+      review
+        .save()
+        .then(() =>
+          res.json(`Review for Product ${req.params.productId} added.`)
+        )
+        .catch((err) => res.status(400).json(`Error: ${err}`));
+    })
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const findReviewByProductId = (req, res) => {
+  Review.findOne({ product: req.params.productId })
+    .then((Review) =>
+      Review === null
+        ? res
+            .status(404)
+            .json(
+              `Review with productId ${req.params.productId} does not exists.`
+            )
+        : res.json(Review)
+    )
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
 exports.findAllProduct = findAllProduct;
 exports.createProduct = createProduct;
 exports.findProductById = findProductById;
@@ -195,3 +294,7 @@ exports.addProductQuestion = addProductQuestion;
 exports.findQuestionAnswerByProductId = findQuestionAnswerByProductId;
 exports.findProductByCategory = findProductByCategory;
 exports.findProductByTitle = findProductByTitle;
+exports.createProductReview = createProductReview;
+exports.addReview = addReview;
+exports.findReviewByProductId = findReviewByProductId;
+exports.addValidReviewer = addValidReviewer;

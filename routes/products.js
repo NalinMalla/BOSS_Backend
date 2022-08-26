@@ -42,5 +42,10 @@ router.route("/update/:id").put(upload.any(), productController.updateProduct);
 router.route("/createQuestionAnswer/:productId").post(productController.createProductQuestionAnswer);
 router.route("/addQuestion/:productId").put(productController.addProductQuestion);
 router.route("/questionAnswer/:productId").get(productController.findQuestionAnswerByProductId)
+router.route("/createReview/:productId").post(productController.createProductReview);
+router.route("/review/:productId").get(productController.findReviewByProductId);
+router.route("/addReview/:productId").put(productController.addReview);
+router.route("/addValidReviewer/:productId").put(productController.addValidReviewer);
+
 
 module.exports = router;

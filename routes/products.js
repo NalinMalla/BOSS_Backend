@@ -38,9 +38,10 @@ router.route("/categories/:category").get(productController.findProductByCategor
 router.route("/search/:title").get(productController.findProductByTitle);
 router.route("/:id").get(productController.findProductById);
 router.route("/:id").delete(productController.deleteProduct);
-router.route("/update/:id").put(upload.any(), productController.updateProduct);
+router.route("/update/:id").put(upload.fields(uploadName), productController.updateProduct);
 router.route("/createQuestionAnswer/:productId").post(productController.createProductQuestionAnswer);
 router.route("/addQuestion/:productId").put(productController.addProductQuestion);
+router.route("/addAnswer/:productId").put(productController.addAnswerByQuestionId);
 router.route("/questionAnswer/:productId").get(productController.findQuestionAnswerByProductId)
 router.route("/createReview/:productId").post(productController.createProductReview);
 router.route("/review/:productId").get(productController.findReviewByProductId);

@@ -112,10 +112,9 @@ const updateProduct = (req, res) => {
       product.discountPrice = Number(req.body.discountPrice);
       product.quantity = Number(req.body.quantity);
       product.category = req.body.category;
+      product.tags = req.body.tags;
 
-      if (req.body.deals !== "") {
-        product.deals = req.body.deals;
-      }
+      product.deals = req.body.deals;
 
       if (req.body.discountRate !== "") {
         product.discountRate = req.body.discountRate;
@@ -129,11 +128,13 @@ const updateProduct = (req, res) => {
         product.specification = req.body.specification;
       }
 
-      if (req.file !== undefined) {
-        Object.values(req.files).forEach((val) => {
-          product.image.push(val[0].path);
-        });
-      }
+      Object.values(req.files).forEach((val) => {
+        let index = val[0].fieldname.substr(10, 1);
+        console.log("index: " + index);
+        product.image[index] = val[0].path;
+        console.log("Request file: ");
+        console.log(val);
+      });
 
       product
         .save()
@@ -156,6 +157,29 @@ const createProductQuestionAnswer = (req, res) => {
   questionAnswer
     .save()
     .then(() => res.json(`QuestionAnswer ${req.params.productId} created.`))
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
+
+const addAnswerByQuestionId = (req, res) => {
+  QuestionAnswer.findOne({ product: req.params.productId })
+    .then((questionAnswer) => {
+      questionAnswer.answers = questionAnswer.answers +1;
+
+      questionAnswer.questionAnswerData.forEach((val) => {
+        if(val._id == req.body.questionId)
+        {
+          val.answer = req.body.answer;
+        }
+      });
+
+      console.log(questionAnswer);
+      questionAnswer
+        .save()
+        .then(() =>
+          res.json(`Answer added to question ${req.body.questionId}.`)
+        )
+        .catch((err) => res.status(400).json(`${err}`));
+    })
     .catch((err) => res.status(400).json(`Error: ${err}`));
 };
 
@@ -291,6 +315,7 @@ exports.deleteProduct = deleteProduct;
 exports.updateProduct = updateProduct;
 exports.createProductQuestionAnswer = createProductQuestionAnswer;
 exports.addProductQuestion = addProductQuestion;
+exports.addAnswerByQuestionId = addAnswerByQuestionId;
 exports.findQuestionAnswerByProductId = findQuestionAnswerByProductId;
 exports.findProductByCategory = findProductByCategory;
 exports.findProductByTitle = findProductByTitle;
@@ -298,3 +323,4 @@ exports.createProductReview = createProductReview;
 exports.addReview = addReview;
 exports.findReviewByProductId = findReviewByProductId;
 exports.addValidReviewer = addValidReviewer;
+

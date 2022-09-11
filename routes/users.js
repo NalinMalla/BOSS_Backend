@@ -46,5 +46,6 @@ router.route("/userOrder/:userId").get(userController.findOrderByUserId);
 router.route("/orders/:status").get(userController.findOrderByStatus);
 router.route("/order/:orderId").get(userController.findOrderById);
 router.route("/updateOrder/:orderId").put(userController.updateOrderById);
+router.post("/mail", userController.sendEmail);
 
 module.exports = router;

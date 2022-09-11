@@ -4,6 +4,7 @@ let Payment = require("../models/user.payment.model");
 let TaggedItem = require("../models/taggedItem.model");
 let Cart = require("../models/cart.model");
 let Order = require("../models/user.order.model");
+const mail = require("../services/mail.service.js");
 
 const findAllUsers = (req, res) => {
   User.find()
@@ -387,6 +388,23 @@ const updateOrderById = (req, res) => {
     })
     .catch((err) => res.status(400).json(`Error: ${err}`));
 };
+
+exports.sendEmail = (req,res) => {
+  const {subject, to, message, html} = req.body;
+  try {
+      if(!subject && !to && !message)
+      {
+          res.status(400).send({message: "Required parameter not set"})
+      }
+      if(html)
+      {
+          return res.send(mail.sendMail(subject, to, message, html));
+      }
+      return res.send(mail.sendMail(subject, to, message));
+  } catch (error) {
+      throw error;
+  }
+}
 
 exports.findAllUsers = findAllUsers;
 exports.createUser = createUser;

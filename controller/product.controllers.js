@@ -143,6 +143,24 @@ const updateProduct = (req, res) => {
     })
     .catch((err) => res.status(400).json(`Error: ${err}`));
 };
+const updateInventory = (req, res) => {
+  Product.findById(req.params.id)
+    .then((product) => {
+      console.log(product.quantity);
+      console.log(req.body.count);
+      if (req.body.return) {
+        product.quantity = product.quantity + Number(req.body.count);
+      } else {
+        product.quantity = product.quantity - Number(req.body.count);
+      }
+      console.log(product.quantity);
+      product
+        .save()
+        .then(() => res.json(`Product ${req.params.id} updated.`))
+        .catch((err) => res.status(400).json(`Error: ${err}`));
+    })
+    .catch((err) => res.status(400).json(`Error: ${err}`));
+};
 
 const createProductQuestionAnswer = (req, res) => {
   const questionAnswer = new QuestionAnswer();
@@ -163,11 +181,10 @@ const createProductQuestionAnswer = (req, res) => {
 const addAnswerByQuestionId = (req, res) => {
   QuestionAnswer.findOne({ product: req.params.productId })
     .then((questionAnswer) => {
-      questionAnswer.answers = questionAnswer.answers +1;
+      questionAnswer.answers = questionAnswer.answers + 1;
 
       questionAnswer.questionAnswerData.forEach((val) => {
-        if(val._id == req.body.questionId)
-        {
+        if (val._id == req.body.questionId) {
           val.answer = req.body.answer;
         }
       });
@@ -286,9 +303,19 @@ const addReview = (req, res) => {
 
       review
         .save()
-        .then(() =>
-          res.json(`Review for Product ${req.params.productId} added.`)
-        )
+        .then(() => {
+          Product.findById(req.params.productId)
+            .then((product) => {
+              product.rating = review.rating;
+              console.log(product.rating);
+              product
+                .save()
+                .then(() => {console.log(`Product ${req.params.productId} rating updated.`)})
+                .catch();
+            })
+            .catch();
+          return res.json(`Review for Product ${req.params.productId} added.`);
+        })
         .catch((err) => res.status(400).json(`Error: ${err}`));
     })
     .catch((err) => res.status(400).json(`Error: ${err}`));
@@ -323,4 +350,4 @@ exports.createProductReview = createProductReview;
 exports.addReview = addReview;
 exports.findReviewByProductId = findReviewByProductId;
 exports.addValidReviewer = addValidReviewer;
-
+exports.updateInventory = updateInventory;

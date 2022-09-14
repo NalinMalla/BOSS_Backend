@@ -39,6 +39,7 @@ router.route("/search/:title").get(productController.findProductByTitle);
 router.route("/:id").get(productController.findProductById);
 router.route("/:id").delete(productController.deleteProduct);
 router.route("/update/:id").put(upload.fields(uploadName), productController.updateProduct);
+router.route("/updateInventory/:id").put(productController.updateInventory);
 router.route("/createQuestionAnswer/:productId").post(productController.createProductQuestionAnswer);
 router.route("/addQuestion/:productId").put(productController.addProductQuestion);
 router.route("/addAnswer/:productId").put(productController.addAnswerByQuestionId);

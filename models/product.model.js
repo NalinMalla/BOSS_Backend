@@ -28,6 +28,11 @@ const ProductSchema = new schema(
       default: 0
     },
     
+    rating:{
+      type: Number,
+      default: 0
+    },
+    
     image: [{ type: String }],
     tags: { type: String },
     description: { type: String },

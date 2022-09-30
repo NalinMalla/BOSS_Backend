@@ -8,6 +8,16 @@ const findAllProduct = (req, res) => {
       .sort({ discountRate: -1 })
       .then((product) => res.json(product))
       .catch((err) => res.status(400).json(`Error: ${err}`));
+  } else if (req.params.searchType === "trending") {
+    Product.find()
+      .sort({ sales: -1, rating: -1 })
+      .then((product) => res.json(product))
+      .catch((err) => res.status(400).json(`Error: ${err}`));
+  } else if (req.params.searchType === "popular") {
+    Product.find()
+      .sort({ rating: -1, sales: -1 })
+      .then((product) => res.json(product))
+      .catch((err) => res.status(400).json(`Error: ${err}`));
   } else {
     Product.find()
       .then((product) => res.json(product))
@@ -150,8 +160,10 @@ const updateInventory = (req, res) => {
       console.log(req.body.count);
       if (req.body.return) {
         product.quantity = product.quantity + Number(req.body.count);
+        product.sales = product.sales - Number(req.body.count);
       } else {
         product.quantity = product.quantity - Number(req.body.count);
+        product.sales = product.sales + Number(req.body.count);
       }
       console.log(product.quantity);
       product
@@ -310,7 +322,11 @@ const addReview = (req, res) => {
               console.log(product.rating);
               product
                 .save()
-                .then(() => {console.log(`Product ${req.params.productId} rating updated.`)})
+                .then(() => {
+                  console.log(
+                    `Product ${req.params.productId} rating updated.`
+                  );
+                })
                 .catch();
             })
             .catch();

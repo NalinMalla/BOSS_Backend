@@ -25,6 +25,33 @@ const findAllProduct = (req, res) => {
   }
 };
 
+const findTenProduct = (req, res) => {
+  if (req.params.searchType === "hotDeals") {
+    Product.find()
+      .sort({ discountRate: -1 })
+      .limit(10)
+      .then((product) => res.json(product))
+      .catch((err) => res.status(400).json(`Error: ${err}`));
+  } else if (req.params.searchType === "trending") {
+    Product.find()
+      .sort({ sales: -1, rating: -1 })
+      .limit(10)
+      .then((product) => res.json(product))
+      .catch((err) => res.status(400).json(`Error: ${err}`));
+  } else if (req.params.searchType === "popular") {
+    Product.find()
+      .sort({ rating: -1, sales: -1 })
+      .limit(10)
+      .then((product) => res.json(product))
+      .catch((err) => res.status(400).json(`Error: ${err}`));
+  } else {
+    Product.find()
+      .limit(10)
+      .then((product) => res.json(product))
+      .catch((err) => res.status(400).json(`Error: ${err}`));
+  }
+};
+
 const createProduct = (req, res) => {
   console.log("Request: ");
   console.log(req.body);
@@ -367,3 +394,4 @@ exports.addReview = addReview;
 exports.findReviewByProductId = findReviewByProductId;
 exports.addValidReviewer = addValidReviewer;
 exports.updateInventory = updateInventory;
+exports.findTenProduct = findTenProduct;

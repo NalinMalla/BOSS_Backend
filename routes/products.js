@@ -31,6 +31,7 @@ const uploadName = [
 ];
 
 router.route("/all/:searchType").get(productController.findAllProduct);
+router.route("/ten/:searchType").get(productController.findTenProduct);
 router
   .route("/add")
   .post(upload.fields(uploadName), productController.createProduct);

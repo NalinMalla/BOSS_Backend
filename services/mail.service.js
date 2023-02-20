@@ -5,7 +5,7 @@ exports.sendMail =  async (subject,to , message, html ) => {
         service: 'gmail',
         auth: {
           user: 'nilanallam@gmail.com', // use env variable => gmail
-          pass: 'iacaoaadntcpetzt', // use env variable => password
+          pass: 'koopoovuvcpjkpfd', // use env variable => password
         },
       });
   
